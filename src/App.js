@@ -42,7 +42,7 @@ class Unscramble extends Component {
         <div className="scrambled-word">{this.state.scramble}</div>
         <div>
           <input id="answer" type="text" value={this.state.answer} onChange={this.handleChange} />
-          <button onClick={this.generateNewScramble}>Skip Scramble</button>
+          <button onClick={this.generateNewScramble}>Skip</button>
         </div>
       </div>
     );
