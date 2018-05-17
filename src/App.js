@@ -11,7 +11,7 @@ class App extends Component {
           <h1 className="App-title">Play Unscramble</h1>
         </header>
         <p className="App-intro">
-          Unscramble the scrambled word
+          Unscramble the word scramble
         </p>
         <Unscramble />
       </div>
