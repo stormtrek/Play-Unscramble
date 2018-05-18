@@ -15,6 +15,7 @@ class Unscramble extends Component {
     };
 
     this.animate = this.animate.bind(this);
+    this.handleSkip = this.handleSkip.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.generateNewScramble = this.generateNewScramble.bind(this);
   }
@@ -32,7 +33,7 @@ class Unscramble extends Component {
             onChange={this.handleChange}
             readOnly={this.state.disabled ? "readonly" : ""}
           />
-          <button onClick={this.generateNewScramble}>Skip</button>
+          <button onClick={this.handleSkip} disabled={this.state.disabled ? "disabled" : ""}>Skip</button>
         </div>
       </div>
     );
@@ -47,6 +48,11 @@ class Unscramble extends Component {
       this.animate(ReactDOM.findDOMNode(this.refs.canvas));
       setTimeout(this.generateNewScramble, 2500);
     }
+  }
+
+  handleSkip() {
+    this.generateNewScramble()
+    document.getElementById("answer").focus();
   }
 
   generateNewScramble() {
