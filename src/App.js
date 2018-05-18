@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import logo from './logo.svg';
 import './App.css';
 
@@ -14,6 +15,7 @@ class App extends Component {
           Unscramble the word scramble
         </p>
         <Unscramble />
+        < footer className="App-footer">Developed by Andy Chan</footer>
       </div>
     );
   }
@@ -29,8 +31,10 @@ class Unscramble extends Component {
       word: newWord,
       scramble: scrambleWord(newWord),
       answer: '',
+      disabled: false,
     }
 
+    this.animate = this.animate.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.generateNewScramble = this.generateNewScramble.bind(this);
   }
@@ -39,9 +43,10 @@ class Unscramble extends Component {
 
     return (
       <div>
-        <div className="scrambled-word">{this.state.scramble}</div>
+        <canvas height="100" width="150" ref="canvas" />
+        <div className="Scrambled-word">{this.state.scramble}</div>
         <div>
-          <input id="answer" type="text" value={this.state.answer} onChange={this.handleChange} />
+          <input id="answer" type="text" value={this.state.answer} onChange={this.handleChange} readOnly={(this.state.disabled)? "readonly" : ""}/>
           <button onClick={this.generateNewScramble}>Skip</button>
         </div>
       </div>
@@ -55,17 +60,59 @@ class Unscramble extends Component {
       word: newWord,
       scramble: scrambleWord(newWord),
       answer: '',
+      disabled: false,
     }) 
   }
 
   handleChange(event) {
+    this.setState({answer: event.target.value})
     const answer = event.target.value
     
     if (answer.toLowerCase() === this.state.word.toLowerCase()) {
-      this.generateNewScramble();
-    } else {
-      this.setState({answer: event.target.value})
+      this.setState({disabled: true});
+      this.animate(ReactDOM.findDOMNode(this.refs.canvas));
+      setTimeout(this.generateNewScramble, 2500);
     }
+  }
+
+  animate(canvas) {
+    let start = 40;
+    let mid = start + 30;
+    let end = start + 100;
+    let width = 22;
+    let leftX = start;
+    let leftY = start;
+    let rightX = mid - (width / 2.7);
+    let rightY = mid + (width / 2.7);
+    let animationSpeed = 20;
+
+    let ctx = canvas.getContext('2d');
+    ctx.lineWidth = width;
+    ctx.strokeStyle = 'rgba(0, 150, 0, 1)';
+
+    for (let i = start; i < mid; i++) {
+      let drawLeft = window.setTimeout(function () {
+        ctx.beginPath();
+        ctx.moveTo(start, start);
+        ctx.lineTo(leftX, leftY);
+        ctx.stroke();
+        leftX++;
+        leftY++;
+      }, 1 + (i * animationSpeed) / 3);
+    }
+
+    for (let i = mid; i < end; i++) {
+      let drawRight = window.setTimeout(function () {
+        ctx.beginPath();
+        ctx.moveTo(leftX, leftY);
+        ctx.lineTo(rightX, rightY);
+        ctx.stroke();
+        rightX++;
+        rightY--;
+      }, 1 + (i * animationSpeed) / 3);
+    }
+
+    setTimeout(function(){ ctx.clearRect(0, 0, canvas.width, canvas.height); }, 2500);
   }
 }
 
