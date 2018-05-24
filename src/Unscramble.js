@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
 class Unscramble extends Component {
+  
   constructor(props) {
     super(props);
 
@@ -39,14 +40,14 @@ class Unscramble extends Component {
     );
   }
 
-  handleChange(event) {
+  async handleChange(event) {
     this.setState({ answer: event.target.value });
     const answer = event.target.value;
 
     if (answer.toLowerCase() === this.state.word.toLowerCase()) {
       this.setState({ disabled: true });
-      this.animate(ReactDOM.findDOMNode(this.refs.canvas));
-      setTimeout(this.generateNewScramble, 2500);
+      let checkMark = await this.animate(ReactDOM.findDOMNode(this.refs.canvas));
+      this.generateNewScramble();
     }
   }
 
@@ -103,9 +104,11 @@ class Unscramble extends Component {
       }, 1 + i * animationSpeed / 3);
     }
 
-    setTimeout(function() {
+    const wait = (delay, ...args) => new Promise(resolve => setTimeout(resolve, delay, ...args));
+
+    return wait(2000).then(() => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }, 2500);
+    })
   }
 }
 
